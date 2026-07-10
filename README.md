@@ -17,20 +17,38 @@ A free, open-source habit tracker with a dot-grid visualization. No paywalls, no
 
 ## Getting the APK
 
-### Option 1: GitHub Actions (recommended)
+## Setup (one-time)
+
+This repo contains all the app source code. Before pushing to GitHub, you need to
+generate Flutter's Android boilerplate (Gradle wrapper binary, plugin loader, etc.)
+which can't be hand-written:
+
+```bash
+# 1. Create a fresh Flutter project somewhere temporary
+flutter create --project-name streaks --org com.example /tmp/streaks_scaffold
+
+# 2. Copy the generated boilerplate into this repo
+cp -r /tmp/streaks_scaffold/android/gradle         ./android/
+cp    /tmp/streaks_scaffold/android/gradlew         ./android/
+cp    /tmp/streaks_scaffold/android/gradlew.bat     ./android/
+
+# 3. (Optional) copy default launcher icons
+cp -r /tmp/streaks_scaffold/android/app/src/main/res/mipmap-* \
+      ./android/app/src/main/res/
+
+# 4. Push to GitHub — Actions will do the rest
+git add .
+git commit -m "Add Android scaffold"
+git push
+```
+
+### Getting the APK from GitHub Actions
 Every push to `main` automatically builds APKs. Go to:
 **Actions → Build APK → latest run → Artifacts → release-apks**
 
 Download and install `app-arm64-v8a-release.apk` for most modern Android phones.
 
-### Option 2: Build locally
-```bash
-flutter pub get
-flutter build apk --release
-# Output: build/app/outputs/flutter-apk/app-release.apk
-```
-
-### Option 3: Tagged release
+### Tagged releases
 Push a version tag to create a GitHub Release with APKs attached:
 ```bash
 git tag v1.0.0
