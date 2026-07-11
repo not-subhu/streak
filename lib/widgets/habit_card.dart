@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/habit.dart';
 import '../providers/habits_provider.dart';
+import '../providers/accent_provider.dart';
 import '../theme.dart';
 import '../widgets/dot_grid.dart';
 import '../widgets/add_habit_sheet.dart';
@@ -70,10 +71,8 @@ class HabitCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header row
                   Row(
                     children: [
-                      // Icon
                       Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
@@ -84,7 +83,6 @@ class HabitCard extends StatelessWidget {
                         child: Text(habit.icon, style: const TextStyle(fontSize: 18)),
                       ),
                       const SizedBox(width: 10),
-                      // Name + streak
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,12 +99,10 @@ class HabitCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // Check button
                       _CheckButton(habit: habit),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  // Dot grid
                   DotGrid(habit: habit),
                 ],
               ),

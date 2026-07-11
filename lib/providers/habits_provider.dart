@@ -21,9 +21,6 @@ class HabitsProvider extends ChangeNotifier {
     return _habits.map((h) => h.currentStreak).reduce((a, b) => a > b ? a : b);
   }
 
-  double get todayCompletionRate =>
-      _habits.isEmpty ? 0 : doneToday / _habits.length;
-
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString('habits_v1');
@@ -41,17 +38,8 @@ class HabitsProvider extends ChangeNotifier {
     await prefs.setString('habits_v1', jsonEncode(_habits.map((h) => h.toJson()).toList()));
   }
 
-  Future<void> addHabit({
-    required String name,
-    required String icon,
-    required int color,
-  }) async {
-    _habits.add(Habit(
-      id: const Uuid().v4(),
-      name: name,
-      icon: icon,
-      color: color,
-    ));
+  Future<void> addHabit({required String name, required String icon, required int color}) async {
+    _habits.add(Habit(id: const Uuid().v4(), name: name, icon: icon, color: color));
     notifyListeners();
     await _save();
   }
@@ -59,6 +47,18 @@ class HabitsProvider extends ChangeNotifier {
   Future<void> toggleToday(String id) async {
     final h = _habits.firstWhere((h) => h.id == id);
     h.toggleToday();
+    notifyListeners();
+    await _save();
+  }
+
+  // Toggle completion for any specific date key "yyyy-MM-dd"
+  Future<void> toggleDate(String id, String dateKey) async {
+    final h = _habits.firstWhere((h) => h.id == id);
+    if (h.completions[dateKey] == true) {
+      h.completions.remove(dateKey);
+    } else {
+      h.completions[dateKey] = true;
+    }
     notifyListeners();
     await _save();
   }

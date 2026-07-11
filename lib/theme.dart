@@ -8,13 +8,14 @@ class AppTheme {
   static const textPrimary = Color(0xFFE4E4E7);
   static const textMuted = Color(0xFF52525B);
   static const muted2 = Color(0xFF3F3F46);
-  static const accent = Color(0xFF7C3AED);
+  // Default accent — overridden at runtime via AccentProvider
+  static const defaultAccent = Color(0xFF7C3AED);
 
-  static ThemeData get dark => ThemeData(
+  static ThemeData build(Color accent) => ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: bg,
-    colorScheme: const ColorScheme.dark(
+    colorScheme: ColorScheme.dark(
       surface: surface,
       primary: accent,
       onPrimary: Colors.white,
@@ -33,14 +34,31 @@ class AppTheme {
         letterSpacing: -0.5,
       ),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    navigationBarTheme: NavigationBarThemeData(
       backgroundColor: surface,
-      selectedItemColor: accent,
-      unselectedItemColor: textMuted,
-      type: BottomNavigationBarType.fixed,
-      elevation: 0,
+      indicatorColor: accent.withOpacity(0.15),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return IconThemeData(color: accent);
+        }
+        return const IconThemeData(color: AppTheme.textMuted);
+      }),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return TextStyle(color: accent, fontSize: 12, fontWeight: FontWeight.w500);
+        }
+        return const TextStyle(color: AppTheme.textMuted, fontSize: 12);
+      }),
     ),
     dividerColor: border,
     cardColor: surface,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: accent,
+      foregroundColor: Colors.white,
+      elevation: 0,
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(backgroundColor: accent),
+    ),
   );
 }

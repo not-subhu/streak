@@ -205,7 +205,7 @@ class _HabitStatCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           // Compact dot grid (last 12 weeks)
-          DotGrid(habit: habit, days: 84),
+          DotGrid(habit: habit, days: 84, interactive: false),
         ],
       ),
     );

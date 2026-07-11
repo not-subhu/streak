@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/habits_provider.dart';
+import 'providers/accent_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/stats_screen.dart';
+import 'screens/settings_screen.dart';
 import 'theme.dart';
 
 void main() {
@@ -16,8 +18,11 @@ void main() {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => HabitsProvider()..load(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HabitsProvider()..load()),
+        ChangeNotifierProvider(create: (_) => AccentProvider()..load()),
+      ],
       child: const StreaksApp(),
     ),
   );
@@ -28,9 +33,10 @@ class StreaksApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.watch<AccentProvider>().accent;
     return MaterialApp(
       title: 'Streaks',
-      theme: AppTheme.dark,
+      theme: AppTheme.build(accent),
       debugShowCheckedModeBanner: false,
       home: const _Root(),
     );
@@ -47,10 +53,12 @@ class _Root extends StatefulWidget {
 class _RootState extends State<_Root> {
   int _index = 0;
 
-  static const _screens = [HomeScreen(), StatsScreen()];
+  static const _screens = [HomeScreen(), StatsScreen(), SettingsScreen()];
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.watch<AccentProvider>().accent;
+
     return Scaffold(
       body: IndexedStack(index: _index, children: _screens),
       bottomNavigationBar: Container(
@@ -59,19 +67,24 @@ class _RootState extends State<_Root> {
         ),
         child: NavigationBar(
           backgroundColor: AppTheme.surface,
-          indicatorColor: AppTheme.accent.withOpacity(0.15),
+          indicatorColor: accent.withOpacity(0.15),
           selectedIndex: _index,
           onDestinationSelected: (i) => setState(() => _index = i),
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(Icons.grid_view_rounded),
-              selectedIcon: Icon(Icons.grid_view_rounded, color: AppTheme.accent),
+              icon: const Icon(Icons.grid_view_rounded),
+              selectedIcon: Icon(Icons.grid_view_rounded, color: accent),
               label: 'Habits',
             ),
             NavigationDestination(
-              icon: Icon(Icons.bar_chart_rounded),
-              selectedIcon: Icon(Icons.bar_chart_rounded, color: AppTheme.accent),
+              icon: const Icon(Icons.bar_chart_rounded),
+              selectedIcon: Icon(Icons.bar_chart_rounded, color: accent),
               label: 'Stats',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.tune_rounded),
+              selectedIcon: Icon(Icons.tune_rounded, color: accent),
+              label: 'Settings',
             ),
           ],
         ),
