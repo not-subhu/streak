@@ -4,6 +4,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:provider/provider.dart';
 import '../models/habit.dart';
 import '../providers/habits_provider.dart';
+import '../providers/accent_provider.dart';
 import '../theme.dart';
 
 class AddHabitSheet extends StatefulWidget {
@@ -29,7 +30,7 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
     _icon = widget.existing?.icon ?? '🎯';
     _color = widget.existing != null
         ? Color(widget.existing!.color)
-        : const Color(0xFF7C3AED);
+        : AppTheme.defaultAccent;
   }
 
   @override
@@ -40,6 +41,7 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.watch<AccentProvider>().accent;
     final isEditing = widget.existing != null;
     final bottomPad = MediaQuery.of(context).viewInsets.bottom;
 
@@ -73,7 +75,6 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
           ),
           const SizedBox(height: 20),
 
-          // Name field
           _label('Name'),
           const SizedBox(height: 6),
           TextField(
@@ -98,14 +99,13 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppTheme.accent),
+                borderSide: BorderSide(color: accent),
               ),
             ),
             onSubmitted: (_) => _save(),
           ),
           const SizedBox(height: 18),
 
-          // Icon + Color row
           Row(
             children: [
               Expanded(
@@ -125,7 +125,7 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
                           color: AppTheme.bg,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _showEmojiPicker ? AppTheme.accent : AppTheme.border,
+                            color: _showEmojiPicker ? accent : AppTheme.border,
                           ),
                         ),
                         alignment: Alignment.center,
@@ -160,7 +160,7 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
                           color: AppTheme.bg,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _showColorPicker ? AppTheme.accent : AppTheme.border,
+                            color: _showColorPicker ? accent : AppTheme.border,
                           ),
                         ),
                         alignment: Alignment.center,
@@ -186,7 +186,6 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
             ],
           ),
 
-          // Emoji picker
           if (_showEmojiPicker) ...[
             const SizedBox(height: 12),
             SizedBox(
@@ -208,28 +207,27 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
                       style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
                     ),
                   ),
-                  categoryViewConfig: const CategoryViewConfig(
+                  categoryViewConfig: CategoryViewConfig(
                     backgroundColor: AppTheme.surface2,
-                    indicatorColor: AppTheme.accent,
-                    iconColorSelected: AppTheme.accent,
+                    indicatorColor: accent,
+                    iconColorSelected: accent,
                     iconColor: AppTheme.textMuted,
                     tabBarHeight: 44,
                   ),
-                  bottomActionBarConfig: const BottomActionBarConfig(
+                  bottomActionBarConfig: BottomActionBarConfig(
                     backgroundColor: AppTheme.surface2,
-                    buttonColor: AppTheme.accent,
+                    buttonColor: accent,
                     buttonIconColor: Colors.white,
                   ),
-                  searchViewConfig: const SearchViewConfig(
+                  searchViewConfig: SearchViewConfig(
                     backgroundColor: AppTheme.surface2,
-                    buttonIconColor: AppTheme.accent,
+                    buttonIconColor: accent,
                   ),
                 ),
               ),
             ),
           ],
 
-          // Color wheel
           if (_showColorPicker) ...[
             const SizedBox(height: 12),
             Container(
@@ -249,7 +247,6 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
 
           const SizedBox(height: 20),
 
-          // Action buttons
           Row(
             children: [
               Expanded(
@@ -270,7 +267,7 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
                 child: FilledButton(
                   onPressed: _save,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppTheme.accent,
+                    backgroundColor: accent,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
@@ -289,12 +286,7 @@ class _AddHabitSheetState extends State<AddHabitSheet> {
     if (name.isEmpty) return;
     final provider = context.read<HabitsProvider>();
     if (widget.existing != null) {
-      provider.updateHabit(
-        widget.existing!.id,
-        name: name,
-        icon: _icon,
-        color: _color.value,
-      );
+      provider.updateHabit(widget.existing!.id, name: name, icon: _icon, color: _color.value);
     } else {
       provider.addHabit(name: name, icon: _icon, color: _color.value);
     }

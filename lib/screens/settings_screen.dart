@@ -15,7 +15,7 @@ const _presets = [
   Color(0xFF0891B2), // cyan
   Color(0xFF65A30D), // lime
   Color(0xFFEA580C), // orange
-  Color(0xFF7C3AED).withRed(120), // indigo-ish
+  Color(0xFF4F46E5), // indigo
 ];
 
 class SettingsScreen extends StatefulWidget {

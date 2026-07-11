@@ -16,7 +16,7 @@ class StatsScreen extends StatelessWidget {
         child: Consumer<HabitsProvider>(
           builder: (context, provider, _) {
             if (!provider.loaded) {
-              return const Center(child: CircularProgressIndicator(color: AppTheme.accent));
+              return const Center(child: CircularProgressIndicator(color: AppTheme.defaultAccent));
             }
             if (provider.habits.isEmpty) {
               return const Center(

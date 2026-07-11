@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/habit.dart';
 import '../providers/habits_provider.dart';
-import '../providers/accent_provider.dart';
 import '../theme.dart';
 import '../widgets/dot_grid.dart';
 import '../widgets/add_habit_sheet.dart';
